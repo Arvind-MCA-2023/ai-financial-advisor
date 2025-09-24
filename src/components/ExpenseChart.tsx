@@ -4,20 +4,20 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 
 const ExpenseChart = () => {
   const monthlyData = [
-    { month: "Jan", income: 8000, expenses: 3200 },
-    { month: "Feb", income: 8200, expenses: 3400 },
-    { month: "Mar", income: 7800, expenses: 3100 },
-    { month: "Apr", income: 8500, expenses: 3600 },
-    { month: "May", income: 8200, expenses: 3450 },
-    { month: "Jun", income: 8800, expenses: 3200 },
+    { month: "Jan", income: 800000, expenses: 320000 },
+    { month: "Feb", income: 820000, expenses: 340000 },
+    { month: "Mar", income: 780000, expenses: 310000 },
+    { month: "Apr", income: 850000, expenses: 360000 },
+    { month: "May", income: 820000, expenses: 345000 },
+    { month: "Jun", income: 880000, expenses: 320000 },
   ];
 
   const categoryData = [
-    { name: "Food & Dining", value: 850, color: "#FF6B35" },
-    { name: "Transportation", value: 420, color: "#F7931E" },
-    { name: "Shopping", value: 680, color: "#FFD23F" },
-    { name: "Bills & Utilities", value: 1200, color: "#06D6A0" },
-    { name: "Entertainment", value: 300, color: "#118AB2" },
+    { name: "Food & Dining", value: 85000, color: "#FF6B35" },
+    { name: "Transportation", value: 42000, color: "#F7931E" },
+    { name: "Shopping", value: 68000, color: "#FFD23F" },
+    { name: "Bills & Utilities", value: 120000, color: "#06D6A0" },
+    { name: "Entertainment", value: 30000, color: "#118AB2" },
   ];
 
   return (

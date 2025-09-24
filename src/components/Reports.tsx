@@ -43,27 +43,27 @@ const Reports = () => {
   const recentInsights = [
     {
       period: "January 2024",
-      totalIncome: 8200,
-      totalExpenses: 3450,
-      netSavings: 4750,
+      totalIncome: 820000,
+      totalExpenses: 345000,
+      netSavings: 475000,
       savingsRate: 58,
       topExpenseCategory: "Bills & Utilities",
       biggestSaving: "Transportation (-15%)"
     },
     {
       period: "December 2023",
-      totalIncome: 8800,
-      totalExpenses: 4200,
-      netSavings: 4600,
+      totalIncome: 880000,
+      totalExpenses: 420000,
+      netSavings: 460000,
       savingsRate: 52,
       topExpenseCategory: "Entertainment",
       biggestSaving: "Food & Dining (-8%)"
     },
     {
       period: "November 2023",
-      totalIncome: 8200,
-      totalExpenses: 3800,
-      netSavings: 4400,
+      totalIncome: 820000,
+      totalExpenses: 380000,
+      netSavings: 440000,
       savingsRate: 54,
       topExpenseCategory: "Shopping",
       biggestSaving: "Bills & Utilities (-5%)"
@@ -142,7 +142,7 @@ const Reports = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold">$4,750</div>
+                <div className="text-2xl font-bold">₹4,75,000</div>
                 <div className="text-sm text-muted-foreground">Monthly Savings</div>
               </div>
               <PieChart className="w-5 h-5 text-primary" />
@@ -234,15 +234,15 @@ const Reports = () => {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <div className="text-muted-foreground">Income</div>
-                      <div className="font-medium text-success">+${insight.totalIncome.toLocaleString()}</div>
+                      <div className="font-medium text-success">+₹{insight.totalIncome.toLocaleString('en-IN')}</div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">Expenses</div>
-                      <div className="font-medium text-destructive">-${insight.totalExpenses.toLocaleString()}</div>
+                      <div className="font-medium text-destructive">-₹{insight.totalExpenses.toLocaleString('en-IN')}</div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">Net Savings</div>
-                      <div className="font-medium text-primary">${insight.netSavings.toLocaleString()}</div>
+                      <div className="font-medium text-primary">₹{insight.netSavings.toLocaleString('en-IN')}</div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">Top Category</div>

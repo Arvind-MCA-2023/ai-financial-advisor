@@ -15,9 +15,9 @@ const RecentTransactions = () => {
   const transactions = [
     {
       id: 1,
-      description: "Whole Foods Market",
+      description: "Big Bazaar",
       category: "Food & Dining",
-      amount: -87.50,
+      amount: -8750,
       date: "Today, 2:30 PM",
       icon: ShoppingBag,
       color: "text-primary",
@@ -25,9 +25,9 @@ const RecentTransactions = () => {
     },
     {
       id: 2,
-      description: "Shell Gas Station",
+      description: "Petrol Pump",
       category: "Transportation",
-      amount: -45.20,
+      amount: -4520,
       date: "Today, 9:15 AM",
       icon: Car,
       color: "text-warning",
@@ -37,7 +37,7 @@ const RecentTransactions = () => {
       id: 3,
       description: "Salary Deposit",
       category: "Income",
-      amount: 4200.00,
+      amount: 420000,
       date: "Yesterday",
       icon: Smartphone,
       color: "text-success",
@@ -45,9 +45,9 @@ const RecentTransactions = () => {
     },
     {
       id: 4,
-      description: "Starbucks Coffee",
+      description: "Cafe Coffee Day",
       category: "Food & Dining",
-      amount: -12.45,
+      amount: -1245,
       date: "Yesterday, 8:00 AM",
       icon: Coffee,
       color: "text-primary",
@@ -57,7 +57,7 @@ const RecentTransactions = () => {
       id: 5,
       description: "Electric Bill",
       category: "Bills & Utilities",
-      amount: -120.00,
+      amount: -12000,
       date: "2 days ago",
       icon: Zap,
       color: "text-destructive",
@@ -106,7 +106,7 @@ const RecentTransactions = () => {
                   <div className={`font-semibold ${
                     transaction.amount > 0 ? "text-success" : "text-foreground"
                   }`}>
-                    {transaction.amount > 0 ? "+" : ""}${Math.abs(transaction.amount).toFixed(2)}
+                    {transaction.amount > 0 ? "+" : ""}₹{Math.abs(transaction.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </div>
                   <div className="text-xs text-muted-foreground">{transaction.date}</div>
                 </div>

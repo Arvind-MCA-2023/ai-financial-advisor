@@ -18,7 +18,7 @@ const Dashboard = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 to-transparent flex items-center">
           <div className="px-8">
             <h1 className="text-4xl font-bold mb-2">
-              Welcome to Your AI Financial Advisor
+              Welcome to Your AI-Financial Advicer
             </h1>
             <p className="text-xl text-muted-foreground mb-4">
               Smart insights, automated tracking, and personalized recommendations

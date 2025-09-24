@@ -11,14 +11,14 @@ const ExpenseTracking = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const transactions = [
-    { id: 1, date: "2024-01-15", description: "Whole Foods Market", category: "Food & Dining", amount: 87.50, type: "expense" },
-    { id: 2, date: "2024-01-15", description: "Shell Gas Station", category: "Transportation", amount: 45.20, type: "expense" },
-    { id: 3, date: "2024-01-14", description: "Salary Deposit", category: "Income", amount: 4200.00, type: "income" },
-    { id: 4, date: "2024-01-14", description: "Starbucks Coffee", category: "Food & Dining", amount: 12.45, type: "expense" },
-    { id: 5, date: "2024-01-13", description: "Electric Bill", category: "Bills & Utilities", amount: 120.00, type: "expense" },
-    { id: 6, date: "2024-01-13", description: "Amazon Purchase", category: "Shopping", amount: 64.99, type: "expense" },
-    { id: 7, date: "2024-01-12", description: "Netflix Subscription", category: "Entertainment", amount: 15.99, type: "expense" },
-    { id: 8, date: "2024-01-12", description: "Freelance Payment", category: "Income", amount: 750.00, type: "income" },
+    { id: 1, date: "2024-01-15", description: "Big Bazaar", category: "Food & Dining", amount: 8750, type: "expense" },
+    { id: 2, date: "2024-01-15", description: "Petrol Pump", category: "Transportation", amount: 4520, type: "expense" },
+    { id: 3, date: "2024-01-14", description: "Salary Deposit", category: "Income", amount: 420000, type: "income" },
+    { id: 4, date: "2024-01-14", description: "Cafe Coffee Day", category: "Food & Dining", amount: 1245, type: "expense" },
+    { id: 5, date: "2024-01-13", description: "Electric Bill", category: "Bills & Utilities", amount: 12000, type: "expense" },
+    { id: 6, date: "2024-01-13", description: "Amazon Purchase", category: "Shopping", amount: 6499, type: "expense" },
+    { id: 7, date: "2024-01-12", description: "Netflix Subscription", category: "Entertainment", amount: 1599, type: "expense" },
+    { id: 8, date: "2024-01-12", description: "Freelance Payment", category: "Income", amount: 75000, type: "income" },
   ];
 
   const categories = ["All", "Food & Dining", "Transportation", "Shopping", "Bills & Utilities", "Entertainment", "Income"];
@@ -47,19 +47,19 @@ const ExpenseTracking = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="financial-card">
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-success">$4,950.00</div>
+            <div className="text-2xl font-bold text-success">₹4,95,000.00</div>
             <div className="text-sm text-muted-foreground">Total Income</div>
           </CardContent>
         </Card>
         <Card className="financial-card">
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-destructive">$346.13</div>
+            <div className="text-2xl font-bold text-destructive">₹34,613.00</div>
             <div className="text-sm text-muted-foreground">Total Expenses</div>
           </CardContent>
         </Card>
         <Card className="financial-card">
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-primary">$4,603.87</div>
+            <div className="text-2xl font-bold text-primary">₹4,60,387.00</div>
             <div className="text-sm text-muted-foreground">Net Income</div>
           </CardContent>
         </Card>
@@ -140,7 +140,7 @@ const ExpenseTracking = () => {
                   <div className={`font-semibold ${
                     transaction.type === "income" ? "text-success" : "text-foreground"
                   }`}>
-                    {transaction.type === "income" ? "+" : "-"}${transaction.amount.toFixed(2)}
+                    {transaction.type === "income" ? "+" : "-"}₹{transaction.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </div>
                   <div className="flex items-center space-x-1">
                     <Button variant="ghost" size="sm">

@@ -35,7 +35,7 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
             <TrendingUp className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">AI Financial Advisor</h1>
+            <h1 className="text-xl font-bold">AI-Financial Advicer</h1>
             <Badge className="badge-orange text-xs">AI-Powered</Badge>
           </div>
         </div>

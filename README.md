@@ -1,73 +1,140 @@
-# Welcome to your Lovable project
+# AI-Financial Advicer
 
-## Project info
+A comprehensive AI-powered financial management application built with React frontend and FastAPI backend.
 
-**URL**: https://lovable.dev/projects/e5530fe3-6cd7-46ad-aeb0-475171128c09
+## Features
 
-## How can I edit this code?
+### Core Modules
 
-There are several ways of editing your application.
+1. **User Management Module**
+   - User registration, login, and authentication
+   - Personal profiles and secure financial data storage
 
-**Use Lovable**
+2. **Data Collection & Expense Tracking Module**
+   - Income and expense input with editing/deletion capabilities
+   - Transaction export functionality
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e5530fe3-6cd7-46ad-aeb0-475171128c09) and start prompting.
+3. **Expense Categorization (NLP) Module**
+   - Automatic expense classification using Natural Language Processing
+   - Categories: Food, Transport, Bills, Shopping, Entertainment, Healthcare, etc.
 
-Changes made via Lovable will be committed automatically to this repo.
+4. **Data Analysis & Visualization Module**
+   - Interactive charts and dashboards
+   - Income vs expenses visualization
+   - Spending habit insights
 
-**Use your preferred IDE**
+5. **Budget Forecasting (AI Models) Module**
+   - Time-series forecasting for savings and expenses
+   - Predictive insights for financial planning
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+6. **Smart Recommendations (LLM) Module**
+   - AI-powered chatbot for financial advice
+   - Personalized tips and recommendations
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+7. **Reporting & Insights Module**
+   - Detailed financial reports
+   - Monthly/annual summaries
+   - Goal tracking and progress evaluation
 
-Follow these steps:
+## Technology Stack
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Frontend
+- React 18 with TypeScript
+- Tailwind CSS for styling
+- shadcn/ui component library
+- Recharts for data visualization
+- React Router for navigation
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Backend
+- FastAPI (Python)
+- PostgreSQL database
+- SQLAlchemy ORM
+- JWT authentication
+- Pydantic for data validation
 
-# Step 3: Install the necessary dependencies.
-npm i
+### AI/ML Components
+- Natural Language Processing for expense categorization
+- Time-series forecasting models
+- Large Language Model integration for chatbot
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## Getting Started
+
+### Prerequisites
+- Node.js 18+ and npm
+- Python 3.8+
+- PostgreSQL 12+
+
+### Frontend Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Backend Setup
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+# Navigate to backend directory
+cd backend
 
-**Use GitHub Codespaces**
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Install dependencies
+pip install -r requirements.txt
 
-## What technologies are used for this project?
+# Set up environment variables
+export DATABASE_URL="postgresql://username:password@localhost/ai_financial_advicer"
+export SECRET_KEY="your-secret-key-here"
 
-This project is built with:
+# Run the server
+python main.py
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Database Setup
 
-## How can I deploy this project?
+```sql
+-- Create database
+CREATE DATABASE ai_financial_advicer;
 
-Simply open [Lovable](https://lovable.dev/projects/e5530fe3-6cd7-46ad-aeb0-475171128c09) and click on Share -> Publish.
+-- Create user (optional)
+CREATE USER financial_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE ai_financial_advicer TO financial_user;
+```
 
-## Can I connect a custom domain to my Lovable project?
+## API Endpoints
 
-Yes, you can!
+### Authentication
+- `POST /auth/register` - User registration
+- `POST /auth/login` - User login
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Transactions
+- `GET /transactions` - Get user transactions
+- `POST /transactions` - Create new transaction
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### Analytics
+- `GET /analytics/summary` - Get financial summary
+
+### AI Features
+- `POST /ai/forecast` - Get financial forecasts
+- `POST /ai/chat` - Chat with AI advisor
+
+## Currency
+
+The application uses Indian Rupees (₹) as the primary currency with proper Indian number formatting.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.

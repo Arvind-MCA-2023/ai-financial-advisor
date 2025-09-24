@@ -6,7 +6,7 @@ const DashboardStats = () => {
   const stats = [
     {
       title: "Total Balance",
-      value: "$24,580.00",
+      value: "₹24,58,000.00",
       change: "+12.5%",
       trend: "up",
       icon: DollarSign,
@@ -14,7 +14,7 @@ const DashboardStats = () => {
     },
     {
       title: "Monthly Income",
-      value: "$8,200.00",
+      value: "₹8,20,000.00",
       change: "+8.2%",
       trend: "up",
       icon: TrendingUp,
@@ -22,7 +22,7 @@ const DashboardStats = () => {
     },
     {
       title: "Monthly Expenses",
-      value: "$3,450.00",
+      value: "₹3,45,000.00",
       change: "-5.1%",
       trend: "down",
       icon: CreditCard,

@@ -52,19 +52,19 @@ const AIAdvisor = () => {
     {
       type: "positive",
       title: "Great Progress!",
-      message: "You've reduced dining expenses by 15% this month while maintaining your lifestyle.",
+      message: "You've reduced dining expenses by 15% this month (saved ₹12,750) while maintaining your lifestyle.",
       confidence: "94%"
     },
     {
       type: "opportunity",
       title: "Optimization Opportunity",
-      message: "Switching to a high-yield savings account could earn you an extra $240 annually.",
+      message: "Switching to a high-yield savings account could earn you an extra ₹24,000 annually.",
       confidence: "87%"
     },
     {
       type: "warning",
       title: "Budget Alert",
-      message: "Entertainment spending is trending 30% above your monthly budget allocation.",
+      message: "Entertainment spending is trending 30% above your monthly budget allocation (₹9,000 over limit).",
       confidence: "91%"
     }
   ];
@@ -100,7 +100,7 @@ const AIAdvisor = () => {
         <div>
           <h1 className="text-2xl font-bold flex items-center space-x-2">
             <Bot className="w-6 h-6 text-primary" />
-            <span>AI Financial Advisor</span>
+            <span>AI Financial Advicer</span>
           </h1>
           <p className="text-muted-foreground">Get personalized financial advice powered by large language models</p>
         </div>

@@ -7,20 +7,20 @@ import { Brain, TrendingUp, AlertTriangle, Target, Zap, Calendar } from "lucide-
 
 const AIForecasting = () => {
   const forecastData = [
-    { month: "Jul", actual: 5600, predicted: 5800, confidence: 95 },
-    { month: "Aug", actual: null, predicted: 6100, confidence: 92 },
-    { month: "Sep", actual: null, predicted: 6200, confidence: 89 },
-    { month: "Oct", actual: null, predicted: 5900, confidence: 85 },
-    { month: "Nov", actual: null, predicted: 6300, confidence: 82 },
-    { month: "Dec", actual: null, predicted: 6500, confidence: 78 },
+    { month: "Jul", actual: 560000, predicted: 580000, confidence: 95 },
+    { month: "Aug", actual: null, predicted: 610000, confidence: 92 },
+    { month: "Sep", actual: null, predicted: 620000, confidence: 89 },
+    { month: "Oct", actual: null, predicted: 590000, confidence: 85 },
+    { month: "Nov", actual: null, predicted: 630000, confidence: 82 },
+    { month: "Dec", actual: null, predicted: 650000, confidence: 78 },
   ];
 
   const expenseForecast = [
-    { category: "Food & Dining", current: 850, predicted: 920, change: 8.2 },
-    { category: "Transportation", current: 420, predicted: 380, change: -9.5 },
-    { category: "Shopping", current: 680, predicted: 750, change: 10.3 },
-    { category: "Bills & Utilities", current: 1200, predicted: 1250, change: 4.2 },
-    { category: "Entertainment", current: 300, predicted: 280, change: -6.7 },
+    { category: "Food & Dining", current: 85000, predicted: 92000, change: 8.2 },
+    { category: "Transportation", current: 42000, predicted: 38000, change: -9.5 },
+    { category: "Shopping", current: 68000, predicted: 75000, change: 10.3 },
+    { category: "Bills & Utilities", current: 120000, predicted: 125000, change: 4.2 },
+    { category: "Entertainment", current: 30000, predicted: 28000, change: -6.7 },
   ];
 
   const budgetAlerts = [
@@ -48,9 +48,9 @@ const AIForecasting = () => {
   ];
 
   const goalProgress = [
-    { goal: "Emergency Fund", current: 12000, target: 15000, progress: 80, timeframe: "3 months" },
-    { goal: "Vacation Fund", current: 3200, target: 5000, progress: 64, timeframe: "6 months" },
-    { goal: "New Car", current: 8500, target: 25000, progress: 34, timeframe: "18 months" },
+    { goal: "Emergency Fund", current: 1200000, target: 1500000, progress: 80, timeframe: "3 months" },
+    { goal: "Vacation Fund", current: 320000, target: 500000, progress: 64, timeframe: "6 months" },
+    { goal: "New Car", current: 850000, target: 2500000, progress: 34, timeframe: "18 months" },
   ];
 
   return (
@@ -79,12 +79,12 @@ const AIForecasting = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold text-success">$6,500</div>
+                <div className="text-2xl font-bold text-success">₹6,50,000</div>
                 <div className="text-sm text-muted-foreground">Predicted Dec Savings</div>
               </div>
               <div className="text-right">
                 <div className="text-sm font-medium text-success">78% confidence</div>
-                <div className="text-xs text-muted-foreground">vs $5,600 current</div>
+                <div className="text-xs text-muted-foreground">vs ₹5,60,000 current</div>
               </div>
             </div>
           </CardContent>
@@ -93,7 +93,7 @@ const AIForecasting = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold text-warning">$3,580</div>
+                <div className="text-2xl font-bold text-warning">₹3,58,000</div>
                 <div className="text-sm text-muted-foreground">Predicted Expenses</div>
               </div>
               <div className="text-right">
@@ -112,7 +112,7 @@ const AIForecasting = () => {
               </div>
               <div className="text-right">
                 <div className="text-sm font-medium text-primary">Emergency Fund</div>
-                <div className="text-xs text-muted-foreground">$3,000 remaining</div>
+                <div className="text-xs text-muted-foreground">₹3,00,000 remaining</div>
               </div>
             </div>
           </CardContent>
@@ -180,11 +180,11 @@ const AIForecasting = () => {
                   <div>
                     <div className="font-medium text-sm">{item.category}</div>
                     <div className="text-xs text-muted-foreground">
-                      Current: ${item.current}
+                      Current: ₹{item.current.toLocaleString('en-IN')}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-semibold">${item.predicted}</div>
+                    <div className="font-semibold">₹{item.predicted.toLocaleString('en-IN')}</div>
                     <div className={`text-xs flex items-center space-x-1 ${
                       item.change > 0 ? "text-destructive" : "text-success"
                     }`}>
@@ -258,8 +258,8 @@ const AIForecasting = () => {
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>${goal.current.toLocaleString()}</span>
-                    <span>${goal.target.toLocaleString()}</span>
+                    <span>₹{goal.current.toLocaleString('en-IN')}</span>
+                    <span>₹{goal.target.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2">
                     <div

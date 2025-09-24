@@ -7,37 +7,37 @@ import { TrendingUp, TrendingDown, DollarSign, Calendar } from "lucide-react";
 
 const Analytics = () => {
   const monthlyData = [
-    { month: "Jan", income: 8000, expenses: 3200, savings: 4800 },
-    { month: "Feb", income: 8200, expenses: 3400, savings: 4800 },
-    { month: "Mar", income: 7800, expenses: 3100, savings: 4700 },
-    { month: "Apr", income: 8500, expenses: 3600, savings: 4900 },
-    { month: "May", income: 8200, expenses: 3450, savings: 4750 },
-    { month: "Jun", income: 8800, expenses: 3200, savings: 5600 },
+    { month: "Jan", income: 800000, expenses: 320000, savings: 480000 },
+    { month: "Feb", income: 820000, expenses: 340000, savings: 480000 },
+    { month: "Mar", income: 780000, expenses: 310000, savings: 470000 },
+    { month: "Apr", income: 850000, expenses: 360000, savings: 490000 },
+    { month: "May", income: 820000, expenses: 345000, savings: 475000 },
+    { month: "Jun", income: 880000, expenses: 320000, savings: 560000 },
   ];
 
   const categoryData = [
-    { name: "Food & Dining", value: 850, color: "#FF6B35", percentage: 24.6 },
-    { name: "Transportation", value: 420, color: "#F7931E", percentage: 12.2 },
-    { name: "Shopping", value: 680, color: "#FFD23F", percentage: 19.7 },
-    { name: "Bills & Utilities", value: 1200, color: "#06D6A0", percentage: 34.8 },
-    { name: "Entertainment", value: 300, color: "#118AB2", percentage: 8.7 },
+    { name: "Food & Dining", value: 85000, color: "#FF6B35", percentage: 24.6 },
+    { name: "Transportation", value: 42000, color: "#F7931E", percentage: 12.2 },
+    { name: "Shopping", value: 68000, color: "#FFD23F", percentage: 19.7 },
+    { name: "Bills & Utilities", value: 120000, color: "#06D6A0", percentage: 34.8 },
+    { name: "Entertainment", value: 30000, color: "#118AB2", percentage: 8.7 },
   ];
 
   const spendingTrends = [
-    { category: "Food & Dining", thisMonth: 850, lastMonth: 920, change: -7.6 },
-    { category: "Transportation", thisMonth: 420, lastMonth: 380, change: 10.5 },
-    { category: "Shopping", thisMonth: 680, lastMonth: 550, change: 23.6 },
-    { category: "Bills & Utilities", thisMonth: 1200, lastMonth: 1150, change: 4.3 },
-    { category: "Entertainment", thisMonth: 300, lastMonth: 450, change: -33.3 },
+    { category: "Food & Dining", thisMonth: 85000, lastMonth: 92000, change: -7.6 },
+    { category: "Transportation", thisMonth: 42000, lastMonth: 38000, change: 10.5 },
+    { category: "Shopping", thisMonth: 68000, lastMonth: 55000, change: 23.6 },
+    { category: "Bills & Utilities", thisMonth: 120000, lastMonth: 115000, change: 4.3 },
+    { category: "Entertainment", thisMonth: 30000, lastMonth: 45000, change: -33.3 },
   ];
 
   const savingsGoalData = [
-    { month: "Jan", actual: 4800, target: 5000 },
-    { month: "Feb", actual: 4800, target: 5000 },
-    { month: "Mar", actual: 4700, target: 5000 },
-    { month: "Apr", actual: 4900, target: 5000 },
-    { month: "May", actual: 4750, target: 5000 },
-    { month: "Jun", actual: 5600, target: 5000 },
+    { month: "Jan", actual: 480000, target: 500000 },
+    { month: "Feb", actual: 480000, target: 500000 },
+    { month: "Mar", actual: 470000, target: 500000 },
+    { month: "Apr", actual: 490000, target: 500000 },
+    { month: "May", actual: 475000, target: 500000 },
+    { month: "Jun", actual: 560000, target: 500000 },
   ];
 
   return (
@@ -73,7 +73,7 @@ const Analytics = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold">$5,600</div>
+                <div className="text-2xl font-bold">₹5,60,000</div>
                 <div className="text-sm text-muted-foreground">Monthly Savings</div>
               </div>
               <div className="flex items-center text-success">
@@ -87,7 +87,7 @@ const Analytics = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold">$3,200</div>
+                <div className="text-2xl font-bold">₹3,20,000</div>
                 <div className="text-sm text-muted-foreground">Avg Monthly Expenses</div>
               </div>
               <div className="flex items-center text-destructive">
@@ -115,7 +115,7 @@ const Analytics = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold">$24,580</div>
+                <div className="text-2xl font-bold">₹24,58,000</div>
                 <div className="text-sm text-muted-foreground">Net Worth</div>
               </div>
               <div className="flex items-center text-success">
@@ -244,7 +244,7 @@ const Analytics = () => {
                   <div>
                     <div className="font-medium text-sm">{trend.category}</div>
                     <div className="text-xs text-muted-foreground">
-                      ${trend.thisMonth} this month
+                      ₹{trend.thisMonth.toLocaleString('en-IN')} this month
                     </div>
                   </div>
                   <div className="text-right">
