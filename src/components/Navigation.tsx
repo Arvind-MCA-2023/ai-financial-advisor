@@ -12,9 +12,12 @@ import {
   Settings
 } from "lucide-react";
 
-const Navigation = () => {
-  const [activeModule, setActiveModule] = useState("dashboard");
+interface NavigationProps {
+  activeModule: string;
+  setActiveModule: (module: string) => void;
+}
 
+const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
   const modules = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "expenses", label: "Expense Tracking", icon: Receipt },
