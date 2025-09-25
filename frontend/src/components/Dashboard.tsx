@@ -4,8 +4,18 @@ import AIInsights from "@/components/AIInsights";
 import QuickActions from "@/components/QuickActions";
 import RecentTransactions from "@/components/RecentTransactions";
 import heroImage from "@/assets/financial-hero.jpg";
+import { useApi } from "@/hooks/useApi";
+import { apiService } from "@/services/api";
 
 const Dashboard = () => {
+  const { data: analytics, loading: analyticsLoading } = useApi(() => 
+    apiService.getIncomeExpenseSummary()
+  );
+  
+  const { data: transactions, loading: transactionsLoading } = useApi(() => 
+    apiService.getTransactions({ limit: 5 })
+  );
+
   return (
     <div className="space-y-6">
       {/* Hero Section */}
@@ -32,7 +42,7 @@ const Dashboard = () => {
       </div>
 
       {/* Dashboard Stats */}
-      <DashboardStats />
+      <DashboardStats analytics={analytics} loading={analyticsLoading} />
 
       {/* Charts Section */}
       <ExpenseChart />
@@ -40,7 +50,7 @@ const Dashboard = () => {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <RecentTransactions />
+          <RecentTransactions transactions={transactions} loading={transactionsLoading} />
           <QuickActions />
         </div>
         <div className="lg:col-span-1">

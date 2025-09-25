@@ -15,9 +15,10 @@ import {
 interface NavigationProps {
   activeModule: string;
   setActiveModule: (module: string) => void;
+  onLogout?: () => void;
 }
 
-const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
+const Navigation = ({ activeModule, setActiveModule, onLogout }: NavigationProps) => {
   const modules = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "expenses", label: "Expense Tracking", icon: Receipt },
@@ -67,6 +68,16 @@ const Navigation = ({ activeModule, setActiveModule }: NavigationProps) => {
         <Button variant="ghost" size="sm">
           <Settings className="w-4 h-4" />
         </Button>
+        {onLogout && (
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={onLogout}
+            className="text-destructive hover:text-destructive"
+          >
+            Logout
+          </Button>
+        )}
       </div>
     </nav>
   );

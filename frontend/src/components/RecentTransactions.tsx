@@ -8,11 +8,87 @@ import {
   Zap, 
   Smartphone,
   MoreHorizontal,
-  Eye
+  Eye,
+  DollarSign
 } from "lucide-react";
+import { Transaction } from "@/types/api";
 
-const RecentTransactions = () => {
-  const transactions = [
+interface RecentTransactionsProps {
+  transactions?: Transaction[];
+  loading?: boolean;
+}
+
+const RecentTransactions = ({ transactions: apiTransactions, loading }: RecentTransactionsProps) => {
+  const getCategoryIcon = (category: string) => {
+    switch (category?.toLowerCase()) {
+      case 'food & dining':
+      case 'food':
+        return Coffee;
+      case 'transportation':
+      case 'transport':
+        return Car;
+      case 'shopping':
+        return ShoppingBag;
+      case 'bills & utilities':
+      case 'utilities':
+        return Zap;
+      case 'income':
+        return DollarSign;
+      default:
+        return Smartphone;
+    }
+  };
+
+  const getCategoryColor = (category: string) => {
+    switch (category?.toLowerCase()) {
+      case 'food & dining':
+      case 'food':
+        return 'text-primary';
+      case 'transportation':
+      case 'transport':
+        return 'text-warning';
+      case 'shopping':
+        return 'text-purple-500';
+      case 'bills & utilities':
+      case 'utilities':
+        return 'text-destructive';
+      case 'income':
+        return 'text-success';
+      default:
+        return 'text-muted-foreground';
+    }
+  };
+
+  if (loading) {
+    return (
+      <Card className="financial-card">
+        <CardHeader>
+          <CardTitle>Recent Transactions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {[1, 2, 3, 4, 5].map((index) => (
+              <div key={index} className="animate-pulse">
+                <div className="flex items-center space-x-3 p-3">
+                  <div className="w-10 h-10 bg-muted rounded-lg"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-3 bg-muted rounded w-1/2"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-muted rounded w-20"></div>
+                    <div className="h-3 bg-muted rounded w-16"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const displayTransactions = apiTransactions || [
     {
       id: 1,
       description: "Big Bazaar",
@@ -81,22 +157,23 @@ const RecentTransactions = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {transactions.map((transaction) => {
-            const Icon = transaction.icon;
+          {displayTransactions.map((transaction) => {
+            const Icon = apiTransactions ? getCategoryIcon(transaction.category) : transaction.icon;
+            const color = apiTransactions ? getCategoryColor(transaction.category) : transaction.color;
             return (
               <div
                 key={transaction.id}
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/30 transition-colors"
               >
                 <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center ${transaction.color}`}>
+                  <div className={`w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center ${color}`}>
                     <Icon className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="font-medium text-sm">{transaction.description}</div>
                     <div className="flex items-center space-x-2">
                       <span className="text-xs text-muted-foreground">{transaction.category}</span>
-                      {transaction.aiCategory && (
+                      {(apiTransactions || transaction.aiCategory) && (
                         <Badge variant="outline" className="text-xs px-1">AI</Badge>
                       )}
                     </div>
@@ -104,11 +181,13 @@ const RecentTransactions = () => {
                 </div>
                 <div className="text-right">
                   <div className={`font-semibold ${
-                    transaction.amount > 0 ? "text-success" : "text-foreground"
+                    (apiTransactions ? transaction.transaction_type === 'income' : transaction.amount > 0) ? "text-success" : "text-foreground"
                   }`}>
-                    {transaction.amount > 0 ? "+" : ""}₹{Math.abs(transaction.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    {(apiTransactions ? transaction.transaction_type === 'income' : transaction.amount > 0) ? "+" : "-"}₹{(apiTransactions ? transaction.amount : Math.abs(transaction.amount)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </div>
-                  <div className="text-xs text-muted-foreground">{transaction.date}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {apiTransactions ? new Date(transaction.date).toLocaleDateString() : transaction.date}
+                  </div>
                 </div>
               </div>
             );
