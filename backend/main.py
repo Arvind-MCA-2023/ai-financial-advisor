@@ -1,27 +1,12 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Boolean, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
-from pydantic import BaseModel
+from sqlalchemy.orm import Session
 from datetime import datetime
-from typing import List, Optional
-import os
-from passlib.context import CryptContext
-from jose import JWTError, jwt
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
-# Database configuration
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://username:password@localhost/ai_financial_advicer")
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-# Security
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
-ALGORITHM = "HS256"
-security = HTTPBearer()
+from typing import List
+from database import get_db
+from models import User, Transaction
+from schemas import UserCreate, UserLogin, TransactionCreate, TransactionResponse
+from auth import get_current_user, verify_password, get_password_hash, create_access_token
 
 app = FastAPI(title="AI-Financial Advicer API", version="1.0.0")
 
@@ -33,124 +18,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Database Models
-class User(Base):
-    __tablename__ = "users"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    full_name = Column(String)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-class Transaction(Base):
-    __tablename__ = "transactions"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, index=True)
-    description = Column(String)
-    amount = Column(Float)
-    category = Column(String)
-    transaction_type = Column(String)  # income or expense
-    date = Column(DateTime, default=datetime.utcnow)
-    is_ai_categorized = Column(Boolean, default=False)
-
-class Budget(Base):
-    __tablename__ = "budgets"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, index=True)
-    category = Column(String)
-    monthly_limit = Column(Float)
-    current_spent = Column(Float, default=0.0)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-class Goal(Base):
-    __tablename__ = "goals"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, index=True)
-    name = Column(String)
-    target_amount = Column(Float)
-    current_amount = Column(Float, default=0.0)
-    target_date = Column(DateTime)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-# Create tables
-Base.metadata.create_all(bind=engine)
-
-# Pydantic models
-class UserCreate(BaseModel):
-    email: str
-    username: str
-    password: str
-    full_name: str
-
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
-class TransactionCreate(BaseModel):
-    description: str
-    amount: float
-    category: str
-    transaction_type: str
-    date: Optional[datetime] = None
-
-class TransactionResponse(BaseModel):
-    id: int
-    description: str
-    amount: float
-    category: str
-    transaction_type: str
-    date: datetime
-    is_ai_categorized: bool
-
-class BudgetCreate(BaseModel):
-    category: str
-    monthly_limit: float
-
-class GoalCreate(BaseModel):
-    name: str
-    target_amount: float
-    target_date: datetime
-
-# Dependency to get DB session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-# Authentication functions
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-def create_access_token(data: dict):
-    to_encode = data.copy()
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
-    try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
-    
-    user = db.query(User).filter(User.username == username).first()
-    if user is None:
-        raise HTTPException(status_code=401, detail="User not found")
-    return user
 
 # Mock data for development
 MOCK_TRANSACTIONS = [
@@ -329,7 +196,3 @@ def categorize_transaction(description: str) -> str:
         return "Income"
     else:
         return "Other"
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)

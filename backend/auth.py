@@ -6,7 +6,7 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from models import User
-from database import get_database
+from database import get_db
 import os
 
 # Security configuration
@@ -39,7 +39,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_database)
+    db: Session = Depends(get_db)
 ) -> User:
     """Get current authenticated user."""
     credentials_exception = HTTPException(
