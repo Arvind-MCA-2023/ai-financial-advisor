@@ -61,20 +61,10 @@ A comprehensive AI-powered financial management application built with React fro
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Python 3.8+
+- Python 3.11+
 - PostgreSQL 12+
 
-### Frontend Setup
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Backend Setup
+### Backend Setup (Start First)
 
 ```bash
 # Navigate to backend directory
@@ -87,13 +77,49 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Set up environment variables
-export DATABASE_URL="postgresql://username:password@localhost/ai_financial_advicer"
-export SECRET_KEY="your-secret-key-here"
+# Set up environment variables in backend/.env
+DATABASE_URL="postgresql://username:password@localhost/ai_financial_advicer"
+SECRET_KEY="your-secret-key-here"
 
-# Run the server
-python main.py
+# Run the server on port 8000
+uvicorn main:app --reload --port 8000
 ```
+
+Backend API will be available at `http://localhost:8000`
+
+### Frontend Setup
+
+```bash
+# Return to root directory
+cd ..
+
+# Install dependencies
+npm install
+
+# The .env file is already configured to connect to backend
+# VITE_API_URL=http://localhost:8000
+
+# Start development server
+npm run dev
+```
+
+Frontend will be available at `http://localhost:8080`
+
+### Running the Full Stack
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+source venv/bin/activate
+uvicorn main:app --reload --port 8000
+```
+
+**Terminal 2 - Frontend:**
+```bash
+npm run dev
+```
+
+The frontend will automatically connect to the backend API running on port 8000.
 
 ### Database Setup
 
