@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Dashboard from "@/components/Dashboard";
 import ExpenseTracking from "@/components/ExpenseTracking";
@@ -6,10 +7,10 @@ import Analytics from "@/components/Analytics";
 import AIForecasting from "@/components/AIForecasting";
 import AIAdvisor from "@/components/AIAdvisor";
 import Reports from "@/components/Reports";
-import AuthForm from "@/components/AuthForm";
 import { apiService } from "@/services/api";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [activeModule, setActiveModule] = useState("dashboard");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,22 +25,23 @@ const Index = () => {
         } catch (error) {
           localStorage.removeItem('authToken');
           setIsAuthenticated(false);
+          navigate('/signin');
         }
+      } else {
+        navigate('/signin');
       }
       setIsLoading(false);
     };
 
     checkAuth();
-  }, []);
+  }, [navigate]);
 
-  const handleAuthSuccess = (token: string) => {
-    setIsAuthenticated(true);
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     setIsAuthenticated(false);
     setActiveModule("dashboard");
+    navigate('/signin');
   };
 
   if (isLoading) {
@@ -50,9 +52,6 @@ const Index = () => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <AuthForm onAuthSuccess={handleAuthSuccess} />;
-  }
 
   const renderActiveModule = () => {
     switch (activeModule) {
