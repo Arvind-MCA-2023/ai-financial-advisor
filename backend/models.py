@@ -16,8 +16,8 @@ class User(Base):
     phone_number = Column(String)
     date_of_birth = Column(DateTime)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
     
     # Relationships
     transactions = relationship("Transaction", back_populates="user")
@@ -33,11 +33,11 @@ class Transaction(Base):
     amount = Column(Float, nullable=False)
     category = Column(String, nullable=False)
     transaction_type = Column(String, nullable=False)  # income or expense
-    date = Column(DateTime, default=datetime.utcnow)
+    date = Column(DateTime, default=datetime.now())
     is_ai_categorized = Column(Boolean, default=False)
     notes = Column(Text)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
     
     # Relationships
     user = relationship("User", back_populates="transactions")
@@ -52,8 +52,8 @@ class Budget(Base):
     current_spent = Column(Float, default=0.0)
     month = Column(Integer, nullable=False)  # 1-12
     year = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
     
     # Relationships
     user = relationship("User", back_populates="budgets")
@@ -69,8 +69,8 @@ class Goal(Base):
     current_amount = Column(Float, default=0.0)
     target_date = Column(DateTime, nullable=False)
     is_completed = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
     
     # Relationships
     user = relationship("User", back_populates="goals")
@@ -85,7 +85,7 @@ class AIInsight(Base):
     message = Column(Text, nullable=False)
     confidence_score = Column(Float)
     is_read = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now())
 
 class ChatHistory(Base):
     __tablename__ = "chat_history"
@@ -94,4 +94,4 @@ class ChatHistory(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user_message = Column(Text, nullable=False)
     ai_response = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now())
