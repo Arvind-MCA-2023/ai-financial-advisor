@@ -66,7 +66,7 @@ const Register = () => {
       const loginResult = await login(registerForm.email, registerForm.password);
       if (loginResult) {
         localStorage.setItem('authToken', loginResult.access_token);
-        navigate('/');
+        navigate('/dashboard');
       }
     } else {
       toast({

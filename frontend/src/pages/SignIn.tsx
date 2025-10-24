@@ -33,7 +33,7 @@ const SignIn = () => {
         title: "Login successful",
         description: "Welcome back to AI Financial Advisor!",
       });
-      navigate('/');
+      navigate('/dashboard');
     } else {
       toast({
         title: "Login failed",

@@ -41,7 +41,7 @@ const Index = () => {
     localStorage.removeItem('authToken');
     setIsAuthenticated(false);
     setActiveModule("dashboard");
-    navigate('/signin');
+    navigate('/');
   };
 
   if (isLoading) {
