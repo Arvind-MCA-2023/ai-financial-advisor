@@ -1,153 +1,159 @@
-import re
-from typing import Dict, List
+import os
+from langchain_groq import ChatGroq
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from typing import List, Dict
+from dotenv import load_dotenv
 
+load_dotenv()
 class ExpenseCategorizer:
-    """Simple NLP-based expense categorization service."""
+    """AI-powered expense categorizer using LangChain and Groq"""
     
-    def __init__(self):
-        self.category_keywords = {
-            "Food & Dining": [
-                "restaurant", "food", "cafe", "dining", "bazaar", "grocery", 
-                "swiggy", "zomato", "dominos", "pizza", "burger", "coffee",
-                "tea", "breakfast", "lunch", "dinner", "snacks", "bakery",
-                "supermarket", "vegetables", "fruits", "meat", "dairy"
-            ],
-            "Transportation": [
-                "petrol", "gas", "uber", "taxi", "transport", "bus", "train",
-                "metro", "auto", "rickshaw", "ola", "fuel", "parking",
-                "toll", "vehicle", "car", "bike", "scooter", "maintenance"
-            ],
-            "Shopping": [
-                "amazon", "shopping", "mall", "store", "purchase", "flipkart",
-                "myntra", "clothes", "shoes", "electronics", "mobile", "laptop",
-                "accessories", "jewelry", "cosmetics", "books", "gifts"
-            ],
-            "Bills & Utilities": [
-                "bill", "electricity", "water", "internet", "phone", "utility",
-                "mobile", "broadband", "wifi", "gas", "cylinder", "maintenance",
-                "society", "rent", "emi", "loan", "insurance", "subscription"
-            ],
-            "Entertainment": [
-                "movie", "netflix", "entertainment", "game", "music", "spotify",
-                "youtube", "cinema", "theatre", "concert", "sports", "gym",
-                "club", "party", "vacation", "travel", "hotel", "booking"
-            ],
-            "Healthcare": [
-                "doctor", "hospital", "medicine", "pharmacy", "medical",
-                "health", "clinic", "dentist", "checkup", "treatment",
-                "surgery", "insurance", "ambulance", "lab", "test"
-            ],
-            "Education": [
-                "school", "college", "university", "course", "tuition",
-                "books", "education", "training", "certification", "exam",
-                "fees", "library", "stationery", "uniform"
-            ],
-            "Investment": [
-                "mutual", "fund", "sip", "stock", "share", "investment",
-                "trading", "demat", "portfolio", "dividend", "bond",
-                "fixed", "deposit", "savings", "ppf", "nsc"
-            ]
-        }
+    # Standard expense categories
+    CATEGORIES = [
+        "Food & Dining",
+        "Transportation",
+        "Shopping",
+        "Entertainment",
+        "Bills & Utilities",
+        "Healthcare",
+        "Education",
+        "Travel",
+        "Personal Care",
+        "Groceries",
+        "Income",
+        "Other"
+    ]
     
-    def categorize(self, description: str) -> str:
-        """Categorize transaction based on description."""
-        description_lower = description.lower()
+    def __init__(self, api_key: str = None, model: str = "llama-3.1-8b-instant"):
+        """
+        Initialize the expense categorizer
         
-        # Remove special characters and extra spaces
-        description_clean = re.sub(r'[^\w\s]', ' ', description_lower)
-        description_clean = ' '.join(description_clean.split())
+        Args:
+            api_key: Groq API key (if not set via environment variable)
+            model: Groq model to use
+        """
+        self.api_key = api_key or os.getenv("GROQ_API_KEY")
+        if not self.api_key:
+            raise ValueError("GROQ_API_KEY must be set as environment variable or passed to constructor")
         
-        # Score each category
-        category_scores = {}
-        for category, keywords in self.category_keywords.items():
-            score = 0
-            for keyword in keywords:
-                if keyword in description_clean:
-                    # Exact match gets higher score
-                    if keyword == description_clean:
-                        score += 10
-                    # Word boundary match
-                    elif re.search(r'\b' + keyword + r'\b', description_clean):
-                        score += 5
-                    # Partial match
-                    else:
-                        score += 1
-            category_scores[category] = score
+        # Initialize Groq LLM
+        self.llm = ChatGroq(
+            api_key=self.api_key,
+            model=model,
+            temperature=0  # Low temperature for consistent categorization
+        )
         
-        # Return category with highest score
-        if category_scores:
-            best_category = max(category_scores, key=category_scores.get)
-            if category_scores[best_category] > 0:
-                return best_category
-        
-        return "Other"
-    
-    def get_confidence_score(self, description: str, predicted_category: str) -> float:
-        """Get confidence score for the prediction."""
-        description_lower = description.lower()
-        keywords = self.category_keywords.get(predicted_category, [])
-        
-        matches = sum(1 for keyword in keywords if keyword in description_lower)
-        confidence = min(matches / len(keywords) * 100, 95) if keywords else 50
-        
-        return confidence
+        # Create prompt template
+        self.prompt = ChatPromptTemplate.from_messages([
+            ("system", """You are an expert expense categorization assistant. 
+Categorize expenses accurately based on the description and amount.
 
-# Singleton instance
-categorizer = ExpenseCategorizer()
+Available categories: {categories}
 
-def categorize_expense(description: str) -> Dict[str, any]:
-    """Categorize expense and return category with confidence."""
-    category = categorizer.categorize(description)
-    confidence = categorizer.get_confidence_score(description, category)
-    
-    return {
-        "category": category,
-        "confidence": confidence,
-        "is_ai_categorized": True
-    }
-
-def get_spending_insights(transactions: List[Dict]) -> Dict[str, any]:
-    """Generate spending insights from transactions."""
-    if not transactions:
-        return {"insights": []}
-    
-    # Calculate category totals
-    category_totals = {}
-    total_expenses = 0
-    
-    for transaction in transactions:
-        if transaction.get("transaction_type") == "expense":
-            category = transaction.get("category", "Other")
-            amount = abs(transaction.get("amount", 0))
-            category_totals[category] = category_totals.get(category, 0) + amount
-            total_expenses += amount
-    
-    # Generate insights
-    insights = []
-    
-    if category_totals:
-        # Top spending category
-        top_category = max(category_totals, key=category_totals.get)
-        top_amount = category_totals[top_category]
-        top_percentage = (top_amount / total_expenses) * 100
+Rules:
+- Return ONLY the category name, nothing else
+- Choose the most appropriate category
+- If unsure, use 'Other'
+- Consider common merchant names and transaction patterns"""),
+            ("human", "Categorize this expense:\nDescription: {description}\nAmount: ${amount}")
+        ])
         
-        insights.append({
-            "type": "spending_pattern",
-            "title": f"Top Spending Category: {top_category}",
-            "message": f"You spent ₹{top_amount:,.2f} ({top_percentage:.1f}%) on {top_category} this month.",
-            "category": top_category,
-            "amount": top_amount,
-            "percentage": top_percentage
-        })
+        # Create chain
+        self.chain = self.prompt | self.llm | StrOutputParser()
+    
+    def categorize(self, description: str, amount: float) -> str:
+        """
+        Categorize a single expense
         
-        # High spending alert
-        if top_percentage > 40:
-            insights.append({
-                "type": "alert",
-                "title": "High Spending Alert",
-                "message": f"Your {top_category} expenses are {top_percentage:.1f}% of total spending. Consider reviewing this category.",
-                "category": top_category,
-                "severity": "medium"
+        Args:
+            description: Transaction description
+            amount: Transaction amount
+            
+        Returns:
+            Category name
+        """
+        try:
+            category = self.chain.invoke({
+                "categories": ", ".join(self.CATEGORIES),
+                "description": description,
+                "amount": f"{amount:.2f}"
             })
+            
+            # Clean up response and validate
+            category = category.strip()
+            if category not in self.CATEGORIES:
+                # Try to find closest match
+                category_lower = category.lower()
+                for valid_cat in self.CATEGORIES:
+                    if valid_cat.lower() in category_lower or category_lower in valid_cat.lower():
+                        return valid_cat
+                return "Other"
+            
+            return category
+        except Exception as e:
+            print(f"Error categorizing expense: {e}")
+            return "Other"
     
-    return {"insights": insights}
+    # def categorize_batch(self, expenses: List[Dict[str, any]]) -> List[Dict[str, any]]:
+    #     """
+    #     Categorize multiple expenses
+        
+    #     Args:
+    #         expenses: List of expense dicts with 'description' and 'amount' keys
+            
+    #     Returns:
+    #         List of expense dicts with added 'category' key
+    #     """
+    #     categorized = []
+    #     for expense in expenses:
+    #         category = self.categorize(
+    #             expense.get("description", ""),
+    #             expense.get("amount", 0.0)
+    #         )
+    #         categorized.append({
+    #             **expense,
+    #             "category": category
+    #         })
+    #     return categorized
+
+
+# Example usage
+if __name__ == "__main__":
+    # Initialize categorizer
+    categorizer = ExpenseCategorizer()
+    
+    # Sample expenses
+    expenses = [
+        {"description": "Starbucks Coffee", "amount": 5.75},
+        {"description": "Uber ride to office", "amount": 15.20},
+        {"description": "Amazon - Kitchen supplies", "amount": 45.99},
+        {"description": "Netflix subscription", "amount": 15.99},
+        {"description": "Shell Gas Station", "amount": 52.00},
+        {"description": "Whole Foods Market", "amount": 87.43},
+        {"description": "CVS Pharmacy", "amount": 23.50},
+        {"description": "Electric Bill - ConEd", "amount": 125.00},
+        {"description": "Planet Fitness Membership", "amount": 29.99},
+        {"description": "Salary Deposit", "amount": 3500.00},
+    ]
+    
+    # Categorize expenses
+    print("Categorizing expenses...\n")
+    categorized_expenses = categorizer.categorize_batch(expenses)
+    
+    # Display results
+    print(f"{'Description':<35} {'Amount':>10} {'Category':<20}")
+    print("-" * 70)
+    for exp in categorized_expenses:
+        print(f"{exp['description']:<35} ${exp['amount']:>9.2f} {exp['category']:<20}")
+    
+    # Category summary
+    print("\n\nCategory Summary:")
+    print("-" * 40)
+    category_totals = {}
+    for exp in categorized_expenses:
+        cat = exp['category']
+        category_totals[cat] = category_totals.get(cat, 0) + exp['amount']
+    
+    for cat, total in sorted(category_totals.items(), key=lambda x: x[1], reverse=True):
+        print(f"{cat:<25} ${total:>10.2f}")

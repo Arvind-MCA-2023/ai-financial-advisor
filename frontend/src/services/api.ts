@@ -1,30 +1,34 @@
+import { Transaction,AnalyticsSummary,CategoryBreakdown } from '../types/api';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     
-    const config: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    };
-
     // Add auth token if available
     const token = localStorage.getItem('authToken');
-    if (token) {
-      config.headers = {
-        ...config.headers,
-        'Authorization': `Bearer ${token}`,
-      };
-    }
+    
+    const config: RequestInit = {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+        ...options.headers,
+      },
+    };
 
     try {
       const response = await fetch(url, config);
       
       if (!response.ok) {
+        if (response.status === 401) {
+          // Token expired or invalid - redirect to login
+          localStorage.removeItem('authToken');
+          window.location.href = '/login';
+          throw new Error('Unauthorized - please login again');
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
@@ -50,28 +54,19 @@ class ApiService {
     });
   }
 
-  async getCurrentUser() {
-    return this.request('/auth/me');
-  }
-
   // Transaction endpoints
-  async getTransactions(params?: { skip?: number; limit?: number; category?: string }) {
-    const queryParams = new URLSearchParams();
-    if (params?.skip) queryParams.append('skip', params.skip.toString());
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
-    if (params?.category) queryParams.append('category', params.category);
-    
-    const query = queryParams.toString();
-    return this.request(`/transactions${query ? `?${query}` : ''}`);
+  async getTransactions(): Promise<Transaction[]> {
+    // ✅ FIX: Use the authenticated request method
+    return this.request<Transaction[]>('/transactions');
   }
 
   async createTransaction(transaction: {
     amount: number;
     description: string;
-    category?: string;
     transaction_type: 'income' | 'expense';
     date?: string;
   }) {
+    console.log('Creating transaction with data:', transaction);
     return this.request('/transactions', {
       method: 'POST',
       body: JSON.stringify(transaction),
@@ -106,36 +101,43 @@ class ApiService {
     return this.request(`/analytics/expenses${query ? `?${query}` : ''}`);
   }
 
-  async getIncomeExpenseSummary() {
-    return this.request('/analytics/summary');
+  async getIncomeExpenseSummary(): Promise<AnalyticsSummary> {
+    return this.request<AnalyticsSummary>('/analytics/summary');
   }
 
-  async getCategoryBreakdown() {
-    return this.request('/analytics/categories');
+  async getCategoryBreakdown(): Promise<CategoryBreakdown[]> {
+    return this.request<CategoryBreakdown[]>('/analytics/categories');
   }
 
   // AI endpoints
-  async getAIInsights() {
-    return this.request('/ai/insights');
+  async getAIInsights(): Promise<{ insights: any[] }> {
+    return this.request<{ insights: any[] }>('/ai/insights');
   }
 
-  async getExpenseForecasting(months?: number) {
+  async getExpenseForecasting(months?: number): Promise<any> {
     const params = months ? `?months=${months}` : '';
     return this.request(`/ai/forecast${params}`);
   }
 
-  async chatWithAdvisor(message: string) {
-    return this.request('/ai/chat', {
+  async chatWithAdvisor(message: string, conversationHistory: any[] = []): Promise<{ response: string; timestamp: string }> {
+    return this.request<{ response: string; timestamp: string }>('/ai/chat', {
       method: 'POST',
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ 
+        message,
+        conversation_history: conversationHistory 
+      }),
     });
   }
 
-  async categorizeTransaction(description: string, amount: number) {
-    return this.request('/ai/categorize', {
+  async categorizeTransaction(description: string, amount: number): Promise<{ category: string; confidence: number; ai_categorized: boolean }> {
+    return this.request<{ category: string; confidence: number; ai_categorized: boolean }>('/ai/categorize', {
       method: 'POST',
       body: JSON.stringify({ description, amount }),
     });
+  }
+
+  async getFinancialTips(): Promise<{ tips: any[] }> {
+    return this.request<{ tips: any[] }>('/ai/tips');
   }
 
   // Reports endpoints

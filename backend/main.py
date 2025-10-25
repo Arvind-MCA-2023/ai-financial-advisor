@@ -7,6 +7,8 @@ from database import get_db
 from models import User, Transaction
 from schemas import UserCreate, UserLogin, TransactionCreate, TransactionResponse
 from auth import get_current_user, verify_password, get_password_hash, create_access_token
+from nlp_service import ExpenseCategorizer
+from ai_service import router as ai_router
 
 app = FastAPI(title="AI-Financial Advicer API", version="1.0.0")
 
@@ -18,18 +20,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Mock data for development
-MOCK_TRANSACTIONS = [
-    {"description": "Big Bazaar", "amount": -8750, "category": "Food & Dining", "transaction_type": "expense"},
-    {"description": "Petrol Pump", "amount": -4520, "category": "Transportation", "transaction_type": "expense"},
-    {"description": "Salary Deposit", "amount": 420000, "category": "Income", "transaction_type": "income"},
-    {"description": "Cafe Coffee Day", "amount": -1245, "category": "Food & Dining", "transaction_type": "expense"},
-    {"description": "Electric Bill", "amount": -12000, "category": "Bills & Utilities", "transaction_type": "expense"},
-    {"description": "Amazon Purchase", "amount": -6499, "category": "Shopping", "transaction_type": "expense"},
-    {"description": "Netflix Subscription", "amount": -1599, "category": "Entertainment", "transaction_type": "expense"},
-    {"description": "Freelance Payment", "amount": 75000, "category": "Income", "transaction_type": "income"},
-]
+app.include_router(ai_router)
 
 # API Routes
 @app.get("/")
@@ -59,30 +50,16 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
     
-    # Create mock transactions for new user
-    for mock_transaction in MOCK_TRANSACTIONS:
-        transaction = Transaction(
-            user_id=db_user.id,
-            description=mock_transaction["description"],
-            amount=mock_transaction["amount"],
-            category=mock_transaction["category"],
-            transaction_type=mock_transaction["transaction_type"],
-            is_ai_categorized=True
-        )
-        db.add(transaction)
-    
-    db.commit()
-    
     return {"message": "User created successfully", "user_id": db_user.id}
 
 @app.post("/auth/login")
 async def login(user: UserLogin, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.username == user.username).first()
+    db_user = db.query(User).filter(User.email == user.email).first()
     if not db_user or not verify_password(user.password, db_user.hashed_password):
-        raise HTTPException(status_code=401, detail="Incorrect username or password")
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
     
-    access_token = create_access_token(data={"sub": user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token(data={"sub": db_user.username})
+    return {"access_token": access_token, "token_type": "bearer", "user_name" : db_user.full_name}
 
 @app.get("/transactions", response_model=List[TransactionResponse])
 async def get_transactions(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -95,18 +72,17 @@ async def create_transaction(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    # Simple NLP categorization (mock implementation)
-    if not transaction.category:
-        transaction.category = categorize_transaction(transaction.description)
+
+    expennse_categorizer = ExpenseCategorizer()
+    category = expennse_categorizer.categorize(transaction.description,transaction.amount)
     
     db_transaction = Transaction(
         user_id=current_user.id,
         description=transaction.description,
         amount=transaction.amount,
-        category=transaction.category,
+        category=category,
         transaction_type=transaction.transaction_type,
         date=transaction.date or datetime.utcnow(),
-        is_ai_categorized=not transaction.category
     )
     db.add(db_transaction)
     db.commit()

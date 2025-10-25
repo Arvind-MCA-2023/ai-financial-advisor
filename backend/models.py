@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, Text, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from database import engine
 
 Base = declarative_base()
 
@@ -13,8 +14,6 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     full_name = Column(String)
-    phone_number = Column(String)
-    date_of_birth = Column(DateTime)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
@@ -34,8 +33,6 @@ class Transaction(Base):
     category = Column(String, nullable=False)
     transaction_type = Column(String, nullable=False)  # income or expense
     date = Column(DateTime, default=datetime.now())
-    is_ai_categorized = Column(Boolean, default=False)
-    notes = Column(Text)
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
     
@@ -95,3 +92,18 @@ class ChatHistory(Base):
     user_message = Column(Text, nullable=False)
     ai_response = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.now())
+
+def reset_database():
+    print("Dropping all tables...")
+    Base.metadata.drop_all(bind=engine)
+    print("Creating all tables...")
+    Base.metadata.create_all(bind=engine)
+    print("Database reset completed!")
+
+if __name__ == "__main__":
+    # Ask for confirmation
+    response = input("This will delete all data in the database. Are you sure? (yes/no): ")
+    if response.lower() == "yes":
+        reset_database()
+    else:
+        print("Database reset cancelled.")

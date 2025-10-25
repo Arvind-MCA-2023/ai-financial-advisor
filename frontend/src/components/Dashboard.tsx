@@ -16,6 +16,8 @@ const Dashboard = () => {
     apiService.getTransactions({ limit: 5 })
   );
 
+  const user_name = localStorage.getItem('userName');
+
   return (
     <div className="space-y-6">
       {/* Hero Section */}
@@ -28,7 +30,7 @@ const Dashboard = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 to-transparent flex items-center">
           <div className="px-8">
             <h1 className="text-4xl font-bold mb-2">
-              Welcome to Your AI-Financial Advicer
+              Welcome, {user_name ? ` ${user_name}` : ' User'}!
             </h1>
             <p className="text-xl text-muted-foreground mb-4">
               Smart insights, automated tracking, and personalized recommendations

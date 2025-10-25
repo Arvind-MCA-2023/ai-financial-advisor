@@ -7,14 +7,12 @@ class UserBase(BaseModel):
     email: EmailStr
     username: str
     full_name: str
-    phone_number: Optional[str] = None
-    date_of_birth: Optional[datetime] = None
 
 class UserCreate(UserBase):
     password: str
 
 class UserLogin(BaseModel):
-    username: str
+    email: EmailStr
     password: str
 
 class UserResponse(UserBase):
@@ -29,9 +27,7 @@ class UserResponse(UserBase):
 class TransactionBase(BaseModel):
     description: str
     amount: float
-    category: str
     transaction_type: str
-    notes: Optional[str] = None
 
 class TransactionCreate(TransactionBase):
     date: Optional[datetime] = None
@@ -40,13 +36,12 @@ class TransactionUpdate(BaseModel):
     description: Optional[str] = None
     amount: Optional[float] = None
     category: Optional[str] = None
-    notes: Optional[str] = None
 
 class TransactionResponse(TransactionBase):
     id: int
     user_id: int
     date: datetime
-    is_ai_categorized: bool
+    category : Optional[str] = None
     created_at: datetime
     
     class Config:
@@ -120,7 +115,17 @@ class ForecastData(BaseModel):
 
 class ChatMessage(BaseModel):
     message: str
+    conversation_history: Optional[List[dict]] = []
 
 class ChatResponse(BaseModel):
     response: str
-    timestamp: datetime
+    timestamp: str
+
+class InsightRequest(BaseModel):
+    user_id: int
+
+class InsightResponse(BaseModel):
+    insights: List[dict]
+
+class ForecastRequest(BaseModel):
+    months: int = 3

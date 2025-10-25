@@ -20,7 +20,7 @@ const Index = () => {
       const token = localStorage.getItem('authToken');
       if (token) {
         try {
-          await apiService.getCurrentUser();
+          // await apiService.getCurrentUser();
           setIsAuthenticated(true);
         } catch (error) {
           localStorage.removeItem('authToken');

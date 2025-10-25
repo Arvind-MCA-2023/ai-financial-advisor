@@ -10,15 +10,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { X, Plus } from "lucide-react";
 
 interface AddTransactionFormProps {
-  onClose: () => void;
   onSuccess: () => void;
 }
 
-const AddTransactionForm = ({ onClose, onSuccess }: AddTransactionFormProps) => {
+const AddTransactionForm = ({ onSuccess }: AddTransactionFormProps) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [form, setForm] = useState({
     description: "",
     amount: "",
-    category: "",
     transaction_type: "expense" as "income" | "expense",
     date: new Date().toISOString().split('T')[0]
   });
@@ -31,22 +30,10 @@ const AddTransactionForm = ({ onClose, onSuccess }: AddTransactionFormProps) => 
     })
   );
 
-  const categories = [
-    "Food & Dining",
-    "Transportation", 
-    "Shopping",
-    "Bills & Utilities",
-    "Entertainment",
-    "Healthcare",
-    "Education",
-    "Travel",
-    "Other"
-  ];
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!form.description || !form.amount || !form.category) {
+    if (!form.description || !form.amount) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields.",
@@ -63,7 +50,7 @@ const AddTransactionForm = ({ onClose, onSuccess }: AddTransactionFormProps) => 
         description: "Your transaction has been successfully added.",
       });
       onSuccess();
-      onClose();
+      setIsOpen(false);
     } else {
       toast({
         title: "Error",
@@ -74,11 +61,18 @@ const AddTransactionForm = ({ onClose, onSuccess }: AddTransactionFormProps) => 
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-md financial-card">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <CardTitle>Add New Transaction</CardTitle>
-          <Button variant="ghost" size="sm" onClick={onClose}>
+    <>
+      <Button onClick={() => setIsOpen(true)} className="flex items-center space-x-2">
+        <Plus className="w-4 h-4" />
+        <span>Add Transaction</span>
+      </Button>
+      
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <Card className="w-full max-w-md financial-card">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+              <CardTitle>Add New Transaction</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
             <X className="w-4 h-4" />
           </Button>
         </CardHeader>
@@ -109,25 +103,6 @@ const AddTransactionForm = ({ onClose, onSuccess }: AddTransactionFormProps) => 
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category">Category *</Label>
-              <Select 
-                value={form.category} 
-                onValueChange={(value) => setForm(prev => ({ ...prev, category: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="type">Transaction Type</Label>
               <Select 
                 value={form.transaction_type} 
@@ -154,7 +129,7 @@ const AddTransactionForm = ({ onClose, onSuccess }: AddTransactionFormProps) => 
             </div>
 
             <div className="flex items-center space-x-2 pt-4">
-              <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+              <Button type="button" variant="outline" onClick={() => setIsOpen(false)} className="flex-1">
                 Cancel
               </Button>
               <Button type="submit" disabled={loading} className="flex-1">
@@ -170,6 +145,8 @@ const AddTransactionForm = ({ onClose, onSuccess }: AddTransactionFormProps) => 
         </CardContent>
       </Card>
     </div>
+    )}
+    </>
   );
 };
 

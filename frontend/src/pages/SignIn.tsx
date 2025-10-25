@@ -29,6 +29,7 @@ const SignIn = () => {
 
     if (result) {
       localStorage.setItem('authToken', result.access_token);
+      localStorage.setItem('userName', result.user_name);
       toast({
         title: "Login successful",
         description: "Welcome back to AI Financial Advisor!",

@@ -15,8 +15,6 @@ export interface Transaction {
   transaction_type: 'income' | 'expense';
   date: string;
   created_at: string;
-  updated_at: string;
-  ai_categorized: boolean;
 }
 
 export interface ExpenseAnalytics {
@@ -82,4 +80,19 @@ export interface PaginatedResponse<T> {
   total: number;
   skip: number;
   limit: number;
+}
+
+export interface AnalyticsSummary {
+  total_income: number;
+  total_expenses: number;
+  net_savings: number;
+  savings_rate: number;
+  category_breakdown?: CategoryBreakdown[];
+}
+
+export interface CategoryBreakdown {
+  category: string;
+  total_amount: number;
+  percentage: number;
+  transaction_count: number;
 }
